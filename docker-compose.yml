@@ -12,5 +12,28 @@ services:
         build: ./backend
         ports:
             - "8080:8080"
+        depends_on:
+            - db
         volumes:
             - ./backend/app:/app
+
+    db:
+        build: ./db
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./db/init.d:/docker-entrypoint-initdb.d
+            - ./db/pgdata:/var/lib/postgresql/data
+        env_file:
+            - ./db/.env
+
+    pgadmin:
+        image: dpage/pgadmin4
+        ports:
+            - "81:80"
+        depends_on:
+            - db
+        volumes:
+            - ./pgadmin:/var/lib/pgadmin
+        env_file:
+            - ./pgadmin/.env

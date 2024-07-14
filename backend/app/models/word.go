@@ -1,7 +1,9 @@
 package models
 
+import "gorm.io/gorm"
+
 type Word struct {
-    WordId int
-    WordEn string
-    WordJa string
+    gorm.Model
+    WordEn string `gorm:"not null"`
+    WordJa string `gorm:"not null"`
 }

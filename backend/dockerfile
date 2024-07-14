@@ -12,7 +12,7 @@ RUN go install github.com/air-verse/air@latest
 EXPOSE 8080
 
 # 開発環境
-CMD ["air"]
+CMD ["sh", "-c", "go run ./migrations/migration.go && air"]
 
 # 本番環境
 # CMD ["go", "run", "main.go"]

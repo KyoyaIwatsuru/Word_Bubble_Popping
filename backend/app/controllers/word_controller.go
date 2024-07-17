@@ -8,7 +8,7 @@ import (
 )
 
 type IWordController interface {
-    FindRandom(ctx *gin.Context)
+    GetRandom(ctx *gin.Context)
 }
 
 type WordController struct {
@@ -19,8 +19,8 @@ func NewWordController(service services.IWordService) IWordController {
     return &WordController{service: service}
 }
 
-func (c *WordController) FindRandom(ctx *gin.Context) {
-    words, err := c.service.FindRandom()
+func (c *WordController) GetRandom(ctx *gin.Context) {
+    words, err := c.service.GetRandom()
     if err != nil {
         if err.Error() == "Not enough words" {
             ctx.JSON(http.StatusNotImplemented, gin.H{"error": err.Error()})

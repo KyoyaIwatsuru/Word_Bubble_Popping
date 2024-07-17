@@ -9,6 +9,9 @@ RUN go mod download
 # 開発環境
 RUN go install github.com/air-verse/air@latest
 
+# 本番環境
+# RUN go run ./migrations/migration.go
+
 EXPOSE 8080
 
 # 開発環境

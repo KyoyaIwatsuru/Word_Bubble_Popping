@@ -9,7 +9,7 @@ import (
 )
 
 type IWordService interface {
-    FindRandom() (*[]models.Word, error)
+    GetRandom() (*[]models.Word, error)
 }
 
 type WordService struct {
@@ -20,7 +20,7 @@ func NewWordService(repository repositories.IWordRepository) IWordService {
     return &WordService{repository: repository}
 }
 
-func (s *WordService) FindRandom() (*[]models.Word, error) {
+func (s *WordService) GetRandom() (*[]models.Word, error) {
     allWords, err := s.repository.FindAll()
     if err != nil {
         return nil, err

@@ -31,5 +31,5 @@
 
 4. プロジェクトルートで以下のコマンドを実行してください．
 ```
-    docker-compose up --build
+    docker compose up --build
 ```

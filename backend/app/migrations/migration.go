@@ -12,11 +12,25 @@ func main() {
     infra.Initialize()
     db := infra.SetupDB()
 
-    if err := db.AutoMigrate(&models.Word{}); err != nil {
-        panic("Failed to migrate database")
+    if !tableExists(db, "words") {
+        if err := db.AutoMigrate(&models.Word{}); err != nil {
+            panic("Failed to migrate database")
+        }
+    }
+
+    if !tableExists(db, "records") {
+        if err := db.AutoMigrate(&models.Record{}); err != nil {
+            panic("Failed to migrate database")
+        }
     }
 
     seedData(db)
+}
+
+func tableExists(db *gorm.DB, tableName string) bool {
+    var count int64
+    db.Raw("SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?", tableName).Count(&count)
+    return count > 0
 }
 
 func seedData(db *gorm.DB) {

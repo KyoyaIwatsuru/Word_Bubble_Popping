@@ -1,0 +1,101 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  frontend-linter-formatter:
+    name: Lint and Prettier for Frontend
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - name: Install dependencies
+        run: cd frontend && npm install
+      - name: Run ESLint
+        run: cd frontend && npm run lint
+      - name: Run Prettier
+        run: cd frontend && npm run prettier:check
+      - name: Commit changes if any
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Apply Prettier Changes in Frontend"
+          branch: ${{ github.head_ref }}
+          file_pattern: frontend/**/*
+
+  backend-formatter:
+    name: Format Check for Backend
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build backend Docker image
+        run: |
+          docker build -t backend-test ./backend
+      - name: Run golangci-lint inside container
+        run: |
+          docker run --rm backend-test golangci-lint run
+      - name: Commit changes if any
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Apply golangci-lint Changes in Backend"
+          branch: ${{ github.head_ref }}
+          file_pattern: backend/**/*
+
+  db-setup:
+    name: Check DB Setup
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.3-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+          TZ: Asia/Tokyo
+          LANG: ja_JP.UTF-8
+          LANGUAGE: ja_JP:ja
+          LC_ALL: ja_JP.UTF-8
+          POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Wait for Postgres
+        run: sleep 30
+      - name: Verify DB connection
+        run: |
+          docker run --rm --network host postgres:16.3-alpine psql -h localhost -U postgres -d testdb -c '\l'
+      - name: Commit changes if any
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update DB Setup"
+          branch: ${{ github.head_ref }}
+          file_pattern: db/**

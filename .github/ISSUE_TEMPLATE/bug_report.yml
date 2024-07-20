@@ -1,7 +1,7 @@
 name: Bug report
 description: Create a report to help us improve
 title: "[Bug]: "
-labels: ["Bug"]
+labels: ["bug"]
 assignees: []
 body:
   - type: markdown
@@ -12,7 +12,7 @@ body:
     id: directory
     attributes:
       label: バグの発生箇所
-      description: バグが発生するページやディレクトリを書いてください。
+      description: バグが発生するページやディレクトリを記載してください。
       placeholder: ~/page.tsx
     validations:
       required: true

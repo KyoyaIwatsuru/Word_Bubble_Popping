@@ -1,0 +1,41 @@
+name: Bug report
+description: Create a report to help us improve
+title: "[Bug]: "
+labels: ["Bug"]
+assignees: ''
+  -
+body:
+  - type: markdown
+    attributes:
+      value: |
+        バグを共有してくれてありがとうございます!
+  - type: textarea
+    id: directory
+    attributes:
+      label: バグの発生箇所
+      description: バグが発生するページやディレクトリを書いてください。
+      placeholder: ~/page.tsx
+    validations:
+      required: true
+  - type: textarea
+    id: about-bug
+    attributes:
+      label: バグの発生内容
+      description: バグの内容について詳細を記載してください。
+      placeholder: 〜が発生
+    validations:
+      required: true
+  - type: textarea
+    id: cause
+    attributes:
+      label: バグの原因と解決法
+      description: どのようにバグを解消するかを記載してください。
+      placeholder: 〜を修正する。
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: エラーコードやログがあれば共有してください.
+      description: Copy and paste here.
+      render: shell
